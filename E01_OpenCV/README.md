@@ -10,24 +10,24 @@
 * cv.imshow()와 cv.waitKey()를 사용해 결과를 화면에 표시하고, 아무키나 누르면 창이 닫히도록 할것
 
 ## 🛠️ 주요 코드
-1. cv.imread()
+1. cv.imread() <br>
    OpenCV에서 이미지를 불러오는 함수이다.
    지정한 경로의 이미지를 읽어 NumPy 배열 형태의 이미지 데이터로 반환한다.
    OpenCV는 이미지를 기본적으로 BGR 색상 형식으로 읽는다.
-2. cv.cvtColor()
+2. cv.cvtColor() <br>
    이미지의 색상 공간(Color Space)을 변환하는 함수이다.
    여기서는 BGR 컬러 이미지를 그레이스케일 이미지로 변환한다.
    그레이스케일 이미지는 밝기 정보만 가지며 단일 채널 이미지이다
-3. np.hstack()
+3. np.hstack() <br>
   NumPy의 배열 연결 함수로, 여러 배열을 **가로 방향(horizontal)**으로 이어 붙인다.
   이를 통해 원본 이미지와 그레이스케일 이미지를 나란히 표시할 수 있다.
-4. cv.imshow()
+4. cv.imshow() <br>
   이미지를 화면 창에 출력하는 함수이다.
   첫 번째 인자는 창 이름, 두 번째 인자는 출력할 이미지이다.
-5. cv.waitKey()
+5. cv.waitKey() <br>
   키 입력을 기다리는 함수이다.
   0을 입력하면 사용자가 아무 키나 누를 때까지 프로그램이 대기한다.
-6. cv.destroyAllWindows()
+6. cv.destroyAllWindows() <br>
    OpenCV로 생성된 모든 이미지 창을 닫는 함수이다.
    
 ## 결과화면 01_gray.py
