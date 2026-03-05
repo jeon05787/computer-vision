@@ -1,48 +1,59 @@
 import cv2 as cv
 import sys
 
-img=cv.imread('C:/Users/COM/Desktop/computer_vision/image/soccer.jpg')
+# 이미지 불러오기
+img = cv.imread('C:/Users/COM/Desktop/computer_vision/image/soccer.jpg')
 if img is None:
     sys.exit('파일을 찾을 수 없습니다.')
 
+clone = img.copy()  # 원본 이미지 복사
 start = None
 end = None
 drawing = False
 
 def select_roi(event, x, y, flags, param):
-global start, end, drawing, img
+    global start, end, drawing, img
 
-if event == cv2.EVENT_LBUTTONDOWN:
-    start = (x, y)
-    drawing = True
-elif event == cv2.EVENT_MOUSEMOVE:
-    if drawing:
-        temp = clone.copy()
-        cv2.rectangle(temp, start, (x, y), (0,255,0), 2)
-        cv2.imshow("image", temp)
+    if event == cv.EVENT_LBUTTONDOWN:
+        start = (x, y)
+        drawing = True
 
-    elif event == cv2.EVENT_LBUTTONUP:
+    elif event == cv.EVENT_MOUSEMOVE:
+        if drawing:
+            temp = clone.copy()
+            cv.rectangle(temp, start, (x, y), (0, 255, 0), 2)
+            cv.imshow("image", temp)
+
+    elif event == cv.EVENT_LBUTTONUP:
         end = (x, y)
         drawing = False
-        cv2.rectangle(img, start, end, (0,255,0), 2)
-        cv2.imshow("image", img)
+        cv.rectangle(img, start, end, (0, 255, 0), 2)
+        cv.imshow("image", img)
 
-        cv2.namedWindow("image")
-        cv2.setMouseCallback("image", select_roi)
+# 윈도우 생성 및 마우스 콜백 설정
+cv.namedWindow("image")
+cv.setMouseCallback("image", select_roi)
 
 while True:
-    cv2.imshow("image", img)
-    key = cv2.waitKey(1) & 0xFF
+    cv.imshow("image", img)
+    key = cv.waitKey(1) & 0xFF
 
-    if key == ord('r'):
+    if key == ord('r'):  # 리셋
         img = clone.copy()
+        start = None
+        end = None
 
-    elif key == ord('s'):
-    if start and end:
-        roi = clone[start[1]:end[1], start[0]:end[0]]
-        cv2.imwrite("roi.png", roi)
-        print("ROI saved")
+    elif key == ord('s'):  # ROI 저장
+        if start and end:
+            # x1<x2, y1<y2 정렬
+            x1, y1 = min(start[0], end[0]), min(start[1], end[1])
+            x2, y2 = max(start[0], end[0]), max(start[1], end[1])
+            roi = clone[y1:y2, x1:x2]
+            cv.imwrite("roi.png", roi)
+            cv.imshow("ROI", roi)
+            print("ROI saved as roi.png")
 
-    elif key == ord('q'):
-    break
-cv2.destroyAllWindows()
+    elif key == ord('q'):  # 종료
+        break
+
+cv.destroyAllWindows()
