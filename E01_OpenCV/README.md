@@ -1,4 +1,4 @@
-
+<결과화면>
 <img width="1432" height="498" alt="Image" src="https://github.com/user-attachments/assets/f08dc0b3-3cd2-42a7-9d22-3e3f38076e62" />
 
 <img width="1433" height="947" alt="Image" src="https://github.com/user-attachments/assets/247aa64a-fa7a-4468-a57c-e3161f1f0eed" />
