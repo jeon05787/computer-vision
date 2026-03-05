@@ -1,1 +1,43 @@
+import cv2 as cv
+import sys
 
+img=cv.imread('C:/Users/COM/Desktop/computer_vision/image/soccer.jpg')
+if img is None:
+    sys.exit('파일을 찾을 수 없습니다.')
+
+drawing = False
+brush_size = 5
+
+def draw(event,x,y,flags,param):
+    global drawing, brush_size
+    
+    if event==cv.EVENT_LBUTTONDOWN:
+        drawing = True
+        cv.circle(img, (x,y), brush_size,(255,0,0))
+        
+    elif event==cv.EVENT_RBUTTONDOWN:
+        drawing = False
+        cv.circle(img, (x,y), brush_size,(0,0,255))
+    elif event==cv.EVENT_MOUSEMOVE:
+        if drawing:
+            if flags & cv.EVENT_FLAG_LBUTTON:
+                cv.circle(img, (x,y), brush_size,(255,0,0))
+            elif flags & cv.EVENT_FLAG_RBUTTON:
+                cv.circle(img, (x,y), brush_size,(0,0,255))
+    cv.imshow('Drawing',img)
+
+cv.namedwindow('Drawing')
+cv.imshow('Drawing',img)
+
+cv.setMouseCallback('Drawing',draw)
+
+while(True):
+    key = cv.waitKey(1)
+
+    if key == ord('+'):
+        brush_size = max(15, brush_size+1)
+    elif key == ord('-'):
+        brush_size = min(1, brush_size-1)
+    elif key == ord('q'):
+        break
+cv.destroyAllWindows()
