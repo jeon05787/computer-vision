@@ -475,18 +475,6 @@ cv2.destroyAllWindows()  # 창 닫기
 ### 실행결과
 <img width="1127" height="972" alt="스크린샷 2026-03-12 155342" src="https://github.com/user-attachments/assets/28550ec5-4e24-4a78-9349-80fb3422d00b" />
 
-=== ROI별 평균 Disparity / Depth ===
-Painting
-  Mean disparity: 19.06
-  Mean depth    : 4.42
-Frog
-  Mean disparity: 33.60
-  Mean depth    : 2.51
-Teddy
-  Mean disparity: 22.42
-  Mean depth    : 3.89
+<img width="337" height="372" alt="image" src="https://github.com/user-attachments/assets/69fe6b06-b01a-4e88-8b8a-7e334d9b6879" />
 
-=== 거리 비교 ===
-가장 가까운 ROI: Frog (2.51)
-가장 먼 ROI    : Painting (4.42)
 
