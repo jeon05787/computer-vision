@@ -19,7 +19,9 @@
 * 실제 좌표를 정확히 알고 있는 패턴이기 때문에 이미지에서 검출된 코너와 실제 좌표의 대응 관계를 이용해 카메라의
 내부 파라미터와 렌즈 왜곡을 계산할 수 있음
 
+
 ### 전체코드
+```python
 import cv2
 import numpy as np
 import glob
@@ -115,6 +117,7 @@ for fname in images:
     cv2.waitKey(0)
 
 cv2.destroyAllWindows()
+```
 
 ### 주요코드
 - **`cv2.findChessboardCorners()`**:  
@@ -146,7 +149,9 @@ cv2.destroyAllWindows()
 * 이미지의 중심 기준으로 +30도 회전
 * 회전과 동시에 크기를 0.8로 조절
 * 그 결과를 x축 방향으로 +80px, y축 방향으로 -40px만큼 평행이동
+
 ### 전체코드
+```python
 import cv2
 import numpy as np
 
@@ -184,6 +189,7 @@ cv2.imshow("Rotated + Scaled + Translated", transformed)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+```
 
 ### 주요코드
 # 주요 코드 설명
@@ -239,7 +245,7 @@ cv2.destroyAllWindows()
 * Disparity map의 결과는 시각화하기 전에 정규화가 필요할 수 있음
 
 ### 전체코드
-
+```python
 import cv2
 import numpy as np
 from pathlib import Path
@@ -420,6 +426,7 @@ cv2.imshow("Depth Map", depth_color)
 
 cv2.waitKey(0)  # 키 입력 대기
 cv2.destroyAllWindows()  # 창 닫기
+```
 
 ### 주요코드
 # 주요 코드 설명
