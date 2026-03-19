@@ -272,15 +272,14 @@ plt.show()
 ```
 
 ### 주요코드
-- **`rect = (10, 10, w-20, h-20)`**:  GrabCut에서 사용할 초기 사각형 영역을 설정한다. 이 영역 내부는 전경(객체) 후보로 간주되며, 객체를 충분히 포함하도록 크게 설정하는 것이 중요하다.
--  **`cv.grabCut(img, mask, rect, bgdModel, fgdModel, 10, cv.GC_INIT_WITH_RECT)`**:GrabCut 알고리즘을 실행하여 이미지에서 전경과 배경을 분리한다.
-rect를 기반으로 초기 분할을 수행하며, 반복 횟수(10)를 통해 분할 결과를 점진적으로 개선한다.    
--  **`mask2 = np.where((mask == cv.GC_BGD) | (mask == cv.GC_PR_BGD), 0, 1).astype('uint8')`**:  GrabCut 결과 마스크를 이진 마스크(0 또는 1)로 변환한다.
+- **`mask = np.zeros(img.shape[:2], np.uint8)`**:  GrabCut에서 사용할 초기 마스크를 생성한다. 이미지와 동일한 크기의 배열을 만들고, 모든 값을 배경(0)으로 초기화한다.
+-  **`rect = (50, 50, w-100, h-100)`**: GrabCut의 초기 사각형 영역을 설정한다. 해당 영역 내부를 전경 후보로 간주하며, 객체가 충분히 포함되도록 적절한 크기로 설정하는 것이 중요하다.  
+-  **`cv.grabCut(img, mask, rect, bgdModel, fgdModel, 10, cv.GC_INIT_WITH_RECT)`**:  GrabCut 알고리즘을 실행하여 전경과 배경을 분리한다. 사각형 영역을 기반으로 초기 분할을 수행하며, 반복 횟수를 통해 결과를 점진적으로 개선한다.
 배경(확실한 배경 + 배경일 가능성)은 0, 전경(확실한 전경 + 전경일 가능성)은 1로 변환한다.
-- **`result = img_rgb * mask2[:, :, np.newaxis]`**:  이진 마스크를 원본 이미지에 적용하여 배경을 제거한다.
-마스크를 3채널로 확장한 뒤 곱셈을 수행하여 전경만 남기고 배경은 제거한다.
--  **`mask = np.zeros(img.shape[:2], np.uint8)`**:  GrabCut에서 사용할 초기 마스크를 생성한다.
-모든 픽셀을 배경으로 초기화한 뒤 알고리즘이 이를 업데이트한다.
+- **`mask2 = np.where((mask == cv.GC_BGD) | (mask == cv.GC_PR_BGD), 0, 1).astype('uint8')`**: GrabCut 결과 마스크를 이진화한다. 배경(0, 2)은 0으로, 전경(1, 3)은 1로 변환하여 최종 마스크를 생성한다.
+-  **`mask2 = cv.morphologyEx(mask2, cv.MORPH_CLOSE, kernel)`**: 마스크 내부의 작은 구멍을 채우기 위해 닫힘 연산(Close)을 수행한다. 객체 내부의 결함을 보완한다
+-  **`mask2 = cv.morphologyEx(mask2, cv.MORPH_OPEN, kernel)`**: 마스크 외부의 작은 노이즈를 제거하기 위해 열림 연산(Open)을 수행한다. 불필요한 잡음을 제거한다.
+-  **`result = img_rgb * mask2[:, :, np.newaxis]`**: 이진 마스크를 원본 이미지에 적용하여 배경을 제거한다. 전경은 유지되고 배경은 제거된 결과 이미지를 생성한다.
 - GrabCut → 마스크 생성 → 이진화 → 이미지에 적용 → 배경 제거
 
 ### 실행결과
