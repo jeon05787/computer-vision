@@ -75,6 +75,7 @@ plt.show()
 - **`plt.imshow(edge_magnitude, cmap='gray')` `** 를 통한 이미지 시각화
 
 ### 실행결과
+<img width="1498" height="832" alt="image" src="https://github.com/user-attachments/assets/7749066c-a0b6-4155-a42a-ffa737b6206f" />
 
 ## 02_캐니 에지 및 허프 변환을 이용한 직선 검출
 
@@ -152,6 +153,7 @@ plt.show()
         cv.line(image_with_lines, (x1, y1), (x2, y2), (0, 0, 255), 2)`**:  빨간색 직선 그리기
    ```
 ### 실행결과
+<img width="1497" height="830" alt="image" src="https://github.com/user-attachments/assets/b117391b-8063-4ed0-b57d-b4b1628ccf8c" />
 
 
 
