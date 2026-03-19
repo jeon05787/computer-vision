@@ -63,15 +63,16 @@ plt.show()
 ```
 
 ### 주요코드
-- **`코드`**:  
-  
--  **`코드`**:  
-
--  **`코드`**:  
-
-- **`코드`**:  
-
--  **`코드`**:  
+- **`image = cv.imread(image_path)`**: 이미지 불러오기
+- **`gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY)  `**: 그레이스케일로 변환
+- Sobel 필터를 사용한 에지 검출(x축, y축)
+- **`sobel_x = cv.Sobel(gray_image, cv.CV_64F, 1, 0, ksize=3) `**:  x축 방향 에지 검출
+- **`sobel_y = cv.Sobel(gray_image, cv.CV_64F, 0, 1, ksize=3) `**:  y축 방향 에지 검출
+- **`edge_magnitude = cv.magnitude(sobel_x, sobel_y)`**:  x, y 방향의 에지를 합성하여 강도 계산
+- **`edge_magnitude = cv.convertScaleAbs(edge_magnitude)`**:   에지 강도를 uint8로 변환
+- **`plt.subplot(1, 2, 1) `**: 원본 이미지 표시
+- **`plt.subplot(1, 2, 2) `**: 에지 강도 이미지 표시
+- **`plt.imshow(edge_magnitude, cmap='gray')` `** 를 통한 이미지 시각화
 
 ### 실행결과
 
@@ -137,16 +138,18 @@ plt.show()
 ```
 
 ### 주요코드
-- **`코드`**:  
-  
--  **`코드`**:  
-  
--  **`코드`**:  
-
-- **`코드`**:  
-
--  **`코드`**:  
-  
+- **`image = cv.imread(image_path)`**: 이미지 불러오기
+-  **`gray_image = cv.cvtColor(image, cv.COLOR_BGR2GRAY`**: 그레이스케일로 변환
+- Canny Edge Detection
+-  **`edges = cv.Canny(gray_image, 100, 200)`**: Canny 알고리즘을 사용하여 에지 검출
+- Hough 변환을 사용한 직선 검출
+- **`lines = cv.HoughLinesP(edges, rho=1, theta=np.pi / 180, threshold=100, minLineLength=50, maxLineGap=10)`**
+- 원본 이미지에 검출된 직선 그리기
+-  **`image_with_lines = image.copy()  # 이미지 복사
+      for line in lines:
+        x1, y1, x2, y2 = line[0]
+        cv.line(image_with_lines, (x1, y1), (x2, y2), (0, 0, 255), 2)`**:  빨간색 직선 그리기
+   
 ### 실행결과
 
 
