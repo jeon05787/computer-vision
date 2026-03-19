@@ -145,11 +145,12 @@ plt.show()
 - Hough 변환을 사용한 직선 검출
 - **`lines = cv.HoughLinesP(edges, rho=1, theta=np.pi / 180, threshold=100, minLineLength=50, maxLineGap=10)`**
 - 원본 이미지에 검출된 직선 그리기
--  **`image_with_lines = image.copy()  # 이미지 복사
+-  ```python
+   image_with_lines = image.copy()  # 이미지 복사
       for line in lines:
         x1, y1, x2, y2 = line[0]
         cv.line(image_with_lines, (x1, y1), (x2, y2), (0, 0, 255), 2)`**:  빨간색 직선 그리기
-   
+   ```
 ### 실행결과
 
 
@@ -178,45 +179,76 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1. 이미지 불러오기
-image_path = 'image\coffee cup.JPG'  # coffee cup 이미지 경로 설정
-image = cv.imread(image_path)
+# - cv.imread(): 이미지를 BGR 형식으로 읽어옴
+img = cv.imread('image\\coffee cup.jpg')
 
-# 2. 초기 사각형 영역 설정 (x, y, width, height)
-rect = (50, 50, 450, 290)  # 예시로 설정된 영역, 사용자에 맞게 변경 가능
+# - OpenCV는 BGR, matplotlib은 RGB를 사용하므로 변환 필요
+img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
 
-# 3. bgdModel과 fgdModel 초기화
-bgd_model = np.zeros((1, 65), np.float64)
-fgd_model = np.zeros((1, 65), np.float64)
+# 2. 마스크 초기화
+# - GrabCut에서 사용할 마스크 배열 생성
+# - 이미지와 동일한 크기의 2D 배열 (초기값: 0 → 확실한 배경)
+mask = np.zeros(img.shape[:2], np.uint8)
 
-# 4. GrabCut 알고리즘을 사용하여 대화식 분할 수행
-mask = np.zeros(image.shape[:2], np.uint8)  # 마스크 초기화
-cv.grabCut(image, mask, rect, bgd_model, fgd_model, 5, cv.GC_INIT_WITH_RECT)
+# 3. GrabCut 모델 초기화
+# - 내부적으로 GMM(Gaussian Mixture Model)에 사용됨
+# - 사용자가 직접 수정하지 않는 내부 버퍼 역할
+bgdModel = np.zeros((1, 65), np.float64)  # 배경 모델
+fgdModel = np.zeros((1, 65), np.float64)  # 전경 모델
 
-# 5. 마스크 값 변경: (배경은 0, 객체는 1로 설정)
-mask2 = np.where((mask == 2) | (mask == 0), 0, 1).astype('uint8')
+# 4. 초기 사각형(rect) 설정
+# - (x, y, width, height)
+# - 이 영역 내부를 "전경 후보"로 간주
+# - 너무 작으면 객체가 잘림 → 크게 잡는 것이 중요
+h, w = img.shape[:2]
+rect = (10, 10, w-20, h-20)  # 거의 전체 이미지 포함
 
-# 6. 원본 이미지에서 배경을 제거하고 객체만 남기기
-result = image * mask2[:, :, np.newaxis]
+# 5. GrabCut 알고리즘 실행
+# - mask를 업데이트하면서 foreground/background를 분리
+# - 10번 반복 수행하여 더 정교하게 분할
+# - cv.GC_INIT_WITH_RECT: rect 기반 초기화
+cv.grabCut(img, mask, rect, bgdModel, fgdModel, 10, cv.GC_INIT_WITH_RECT)
 
-# 7. 원본 이미지, 마스크 이미지, 배경 제거 이미지를 나란히 시각화
-plt.figure(figsize=(18, 6))
+# 6. 마스크 값 변환
+# GrabCut 결과 값 의미:
+# 0: 확실한 배경 (GC_BGD)
+# 1: 확실한 전경 (GC_FGD)
+# 2: 배경일 가능성 (GC_PR_BGD)
+# 3: 전경일 가능성 (GC_PR_FGD)
+
+# - 배경(0,2) → 0
+# - 전경(1,3) → 1
+# → 이진 마스크 생성
+mask2 = np.where(
+    (mask == cv.GC_BGD) | (mask == cv.GC_PR_BGD),
+    0,  # 배경
+    1   # 전경
+).astype('uint8')
+
+# 7. 배경 제거
+# - mask2를 3채널로 확장하여 RGB 이미지에 적용
+# - 전경(1)은 유지, 배경(0)은 제거됨
+result = img_rgb * mask2[:, :, np.newaxis]
+
+# 8. 결과 시각화 (matplotlib)
+plt.figure(figsize=(15, 5))
 
 # 원본 이미지
 plt.subplot(1, 3, 1)
-plt.imshow(cv.cvtColor(image, cv.COLOR_BGR2RGB))
-plt.title("Original Image")
+plt.title('Original Image')
+plt.imshow(img_rgb)
 plt.axis('off')
 
-# 마스크 이미지
+# 마스크 이미지 (흑백)
 plt.subplot(1, 3, 2)
+plt.title('Mask Image')
 plt.imshow(mask2, cmap='gray')
-plt.title("Mask Image")
 plt.axis('off')
 
-# 배경 제거 이미지
+# 배경 제거 결과
 plt.subplot(1, 3, 3)
-plt.imshow(cv.cvtColor(result, cv.COLOR_BGR2RGB))
-plt.title("Foreground Image")
+plt.title('Background Removed')
+plt.imshow(result)
 plt.axis('off')
 
 plt.tight_layout()
@@ -224,17 +256,19 @@ plt.show()
 ```
 
 ### 주요코드
-- **`코드`**:  
-  
--  **`코드`**:  
-  
--  **`코드`**:  
-
-- **`코드`**:  
-
--  **`코드`**:  
+- **`rect = (10, 10, w-20, h-20)`**:  GrabCut에서 사용할 초기 사각형 영역을 설정한다. 이 영역 내부는 전경(객체) 후보로 간주되며, 객체를 충분히 포함하도록 크게 설정하는 것이 중요하다.
+-  **`cv.grabCut(img, mask, rect, bgdModel, fgdModel, 10, cv.GC_INIT_WITH_RECT)`**:GrabCut 알고리즘을 실행하여 이미지에서 전경과 배경을 분리한다.
+rect를 기반으로 초기 분할을 수행하며, 반복 횟수(10)를 통해 분할 결과를 점진적으로 개선한다.    
+-  **`mask2 = np.where((mask == cv.GC_BGD) | (mask == cv.GC_PR_BGD), 0, 1).astype('uint8')`**:  GrabCut 결과 마스크를 이진 마스크(0 또는 1)로 변환한다.
+배경(확실한 배경 + 배경일 가능성)은 0, 전경(확실한 전경 + 전경일 가능성)은 1로 변환한다.
+- **`result = img_rgb * mask2[:, :, np.newaxis]`**:  이진 마스크를 원본 이미지에 적용하여 배경을 제거한다.
+마스크를 3채널로 확장한 뒤 곱셈을 수행하여 전경만 남기고 배경은 제거한다.
+-  **`mask = np.zeros(img.shape[:2], np.uint8)`**:  GrabCut에서 사용할 초기 마스크를 생성한다.
+모든 픽셀을 배경으로 초기화한 뒤 알고리즘이 이를 업데이트한다.
+- GrabCut → 마스크 생성 → 이진화 → 이미지에 적용 → 배경 제거
 
 ### 실행결과
+<img width="1877" height="705" alt="image" src="https://github.com/user-attachments/assets/85ee5a22-9357-410f-bd8f-a79bb29a090f" />
 
 
 
