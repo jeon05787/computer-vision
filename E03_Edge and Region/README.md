@@ -270,7 +270,8 @@ rect를 기반으로 초기 분할을 수행하며, 반복 횟수(10)를 통해 
 - GrabCut → 마스크 생성 → 이진화 → 이미지에 적용 → 배경 제거
 
 ### 실행결과
-<img width="1877" height="705" alt="image" src="https://github.com/user-attachments/assets/85ee5a22-9357-410f-bd8f-a79bb29a090f" />
+<img width="1874" height="704" alt="image" src="https://github.com/user-attachments/assets/101de595-40f8-4ff3-a26d-9d30c3b407f2" />
+
 
 
 
