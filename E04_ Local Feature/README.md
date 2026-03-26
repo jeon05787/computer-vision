@@ -285,5 +285,6 @@ plt.show()
 
 
 ### 실행결과
+<img width="1918" height="615" alt="image" src="https://github.com/user-attachments/assets/abe66ad0-bebd-4b56-b835-ef0fb5e81658" />
 
 
