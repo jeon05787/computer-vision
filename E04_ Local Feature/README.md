@@ -22,8 +22,8 @@ import matplotlib.pyplot as plt
 # 이미지 읽기
 img = cv.imread('image\mot_color70.jpg')
 
-# SIFT 객체 생성
-sift = cv.SIFT_create()
+# SIFT 객체 생성 (최대 특징점 개수를 500개로 제한)
+sift = cv.SIFT_create(nfeatures=500)
 
 # 특징점 및 디스크립터 검출
 keypoints, descriptors = sift.detectAndCompute(img, None)
@@ -58,7 +58,8 @@ plt.show()
 -  **`plt.imshow(cv.cvtColor(img_keypoints, cv.COLOR_BGR2RGB))`**:  Matplotlib을 사용하여 이미지를 시각화합니다.
 
 ### 실행결과
-<img width="1495" height="486" alt="image" src="https://github.com/user-attachments/assets/d16bcf99-4451-4f89-bace-7a2be3317ab8" />
+<img width="1499" height="579" alt="image" src="https://github.com/user-attachments/assets/5867e1b7-1514-40f3-9498-45d1ac9cbe1c" />
+
 
 ## 02_SIFT를 이용한 두 영상 간 특징점 매칭
 
