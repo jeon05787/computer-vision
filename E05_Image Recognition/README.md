@@ -168,12 +168,12 @@ if os.path.exists(IMG_PATH):
     pred_class = np.argmax(pred)
     confidence = pred[0][pred_class] * 100
 
-    # 결과 출력
-    print(f"\n dog.jpg 예측 결과: {CLASS_NAMES[pred_class]} ({confidence:.1f}%)")
+    # 결과 출력 (예측된 클래스와 신뢰도를 출력)
+    print(f"\n dog.jpg 예측 결과: {CLASS_NAMES[pred_class]}")
+    print(f"신뢰도: {confidence:.1f}%")
 else:
     print(f"\n '{IMG_PATH}' 파일을 찾을 수 없습니다.")
     print("   dog.jpg를 코드와 같은 폴더에 넣어주세요.")
-
 
 ```
 
