@@ -225,4 +225,6 @@ confidence = pred[0][pred_class] * 100
 ```
 
 ### 실행결과
-<img width="956" height="560" alt="스크린샷 2026-04-02 152330" src="https://github.com/user-attachments/assets/555d516f-6376-45ec-b31d-850b7bec7eb9" />
+![화면 캡처 2026-04-02 160040](https://github.com/user-attachments/assets/2bced4ae-a6da-4527-9aeb-a542d6345ca8)
+
+
