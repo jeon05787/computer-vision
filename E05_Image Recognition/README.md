@@ -184,7 +184,7 @@ else:
 x_test  = x_test / 255.0`**:  훈련 데이터와 테스트 데이터의 픽셀 값을 0과 1 사이로 정규화하여 모델 훈련 속도를 높입니다.
   
 -  **`CNN 모델 구축`**:  Conv2D, MaxPooling2D, Dropout 등을 이용하여 CNN 모델을 설계합니다.
-```
+```python
 model = Sequential([
     Conv2D(32, (3, 3), activation='relu', padding='same', input_shape=(32, 32, 3)),
     Conv2D(32, (3, 3), activation='relu', padding='same'),
@@ -204,7 +204,7 @@ model = Sequential([
 
 -  **`모델 훈련`**: 10 에포크 동안 훈련 데이터를 사용하여 모델을 학습시킵니다.
 검증 데이터는 **훈련 데이터의 10%**를 사용합니다.
-```
+```python
 history = model.fit(
     x_train, y_train,
     epochs=10,
@@ -215,7 +215,7 @@ history = model.fit(
 ```
 - **`dog.jpg 예측`**:  dog.jpg 이미지를 CIFAR-10 크기로 리사이즈한 후 정규화하고 예측을 수행합니다.
 예측된 클래스와 확신도를 출력합니다.
-```
+```python
 img = image.load_img(IMG_PATH, target_size=(32, 32))  # CIFAR-10 크기로 리사이즈
 img_arr = image.img_to_array(img) / 255.0             # 정규화
 img_input = np.expand_dims(img_arr, axis=0)           # (1, 32, 32, 3)
