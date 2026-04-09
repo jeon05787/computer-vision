@@ -419,21 +419,27 @@ if __name__ == "__main__":
 ```
 
 ### 주요코드
-- **`모델 다운로드 함수`**:  ```python
-  def download_model():
+-  **`모델 다운로드 함수`**:
+ ```python
+   def download_model():
     if not os.path.exists(MODEL_PATH):
         url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
-        urllib.request.urlretrieve(url, MODEL_PATH) ``` 모델이 로컬에 없으면, Mediapipe에서 제공하는 모델을 다운로드
+        urllib.request.urlretrieve(url, MODEL_PATH)
+```
+모델이 로컬에 없으면, Mediapipe에서 제공하는 모델을 다운로드
   
 
--  **`FaceLandmarker 초기화`**:  ```python
+-  **`FaceLandmarker 초기화`**:
+ ```python
   options = FaceLandmarkerOptions(
     base_options=python.BaseOptions(model_asset_path=MODEL_PATH),
     running_mode=RunningMode.IMAGE,
     num_faces=2,
     min_face_detection_confidence=0.5,
     min_tracking_confidence=0.5
-) ```  FaceLandmarkerOptions를 사용하여 모델 설정
+)
+```
+FaceLandmarkerOptions를 사용하여 모델 설정
   
 
 -  **`웹캠 영상 읽고 얼굴 랜드마크 검출`**:
