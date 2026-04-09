@@ -458,5 +458,6 @@ if results.face_landmarks:
 실시간으로 웹캠 영상에서 얼굴 랜드마크를 추출.
 
 ### 실행결과
-<img width="793" height="638" alt="스크린샷 2026-04-09 124150" src="https://github.com/user-attachments/assets/9fd659d3-997f-4482-af5c-e9b5848fab79" />
+<img width="249" height="347" alt="image" src="https://github.com/user-attachments/assets/c51b78f9-1d31-4a8a-981e-704c7da82718" />
+
 
