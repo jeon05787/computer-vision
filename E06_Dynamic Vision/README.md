@@ -244,19 +244,64 @@ if __name__ == "__main__":
 ```
 
 ### 주요코드
-- **`코드`**:  
+-  **`IoU 계산 함수`**:
+ ```python
+  def iou(bb_test, bb_gt):
+    xx1 = max(bb_test[0], bb_gt[0])
+    yy1 = max(bb_test[1], bb_gt[1])
+    xx2 = min(bb_test[2], bb_gt[2])
+    yy2 = min(bb_test[3], bb_gt[3])
+    w = max(0., xx2 - xx1)
+    h = max(0., yy2 - yy1)
+    inter = w * h
+    area_a = (bb_test[2] - bb_test[0]) * (bb_test[3] - bb_test[1])
+    area_b = (bb_gt[2] - bb_gt[0]) * (bb_gt[3] - bb_gt[1])
+    union = area_a + area_b - inter
+    return inter / union if union > 0 else 0.0
+```
+두 바운딩 박스 사이의 교집합을 이용해 IoU 계산.
   
 
--  **`코드`**:  
+-  **`칼만 필터 기반 객체 추적기`**:
+ ```python
+class KalmanBoxTracker:
+    def __init__(self, bbox):
+        self.kf = KalmanFilter(dim_x=7, dim_z=4)
+        self.kf.F = np.eye(7)
+        self.kf.H = np.eye(4, 7)
+        self.kf.x[:4] = bbox_to_z(bbox)
+        
+    def predict(self):
+        self.kf.predict()
+        return z_to_bbox(self.kf.x)
+    
+    def update(self, bbox):
+        self.kf.update(bbox_to_z(bbox))
+```
+KalmanBoxTracker를 통해 객체의 위치 예측과 추적.
   
 
--  **`코드`**:  
+-  **`SORT 추적기`**:
+ ```python
+  class Sort:
+    def __init__(self, max_age=3, min_hits=3, iou_thr=0.3):
+        self.trackers = []
+    
+    def update(self, dets):
+        trk_preds = [t.predict() for t in self.trackers]
+        matched, u_dets, _ = associate(dets[:, :4].tolist(), trk_preds)
+        
+        for d, t in matched:
+            self.trackers[t].update(dets[d, :4])
+        for d in u_dets:
+            self.trackers.append(KalmanBoxTracker(dets[d, :4]))
+        return np.array(results)
+```
+여러 객체를 추적하고, associate()를 통해 현재 검출된 객체와 이전 추적 객체를 매칭.
 
-- **`코드`**:  
-
--  **`코드`**:  
 
 ### 실행결과
+<img width="799" height="485" alt="스크린샷 2026-04-09 144251" src="https://github.com/user-attachments/assets/b925e90f-4bed-4fc8-890f-036d68350435" />
 
 ## 02_Mediapipe를 활용한 얼굴랜드 마크 추출 및 시각화
 
@@ -374,17 +419,38 @@ if __name__ == "__main__":
 ```
 
 ### 주요코드
-- **`코드`**:  
+- **`모델 다운로드 함수`**:  ```python
+  def download_model():
+    if not os.path.exists(MODEL_PATH):
+        url = "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task"
+        urllib.request.urlretrieve(url, MODEL_PATH) ``` 모델이 로컬에 없으면, Mediapipe에서 제공하는 모델을 다운로드
   
 
--  **`코드`**:  
+-  **`FaceLandmarker 초기화`**:  ```python
+  options = FaceLandmarkerOptions(
+    base_options=python.BaseOptions(model_asset_path=MODEL_PATH),
+    running_mode=RunningMode.IMAGE,
+    num_faces=2,
+    min_face_detection_confidence=0.5,
+    min_tracking_confidence=0.5
+) ```  FaceLandmarkerOptions를 사용하여 모델 설정
   
 
--  **`코드`**:  
+-  **`웹캠 영상 읽고 얼굴 랜드마크 검출`**:
+ ```python
+  frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
+results = landmarker.detect(mp_image)
 
-- **`코드`**:  
-
--  **`코드`**:  
+if results.face_landmarks:
+    for face_landmarks in results.face_landmarks:
+        for lm in face_landmarks:
+            x = int(lm.x * W)
+            y = int(lm.y * H)
+            cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)
+```
+실시간으로 웹캠 영상에서 얼굴 랜드마크를 추출.
 
 ### 실행결과
+<img width="793" height="638" alt="스크린샷 2026-04-09 124150" src="https://github.com/user-attachments/assets/9fd659d3-997f-4482-af5c-e9b5848fab79" />
 
