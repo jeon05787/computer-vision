@@ -1,4 +1,4 @@
-# Computer Vision Projects & Lab Notes 👁️
+# Computer Vision Projects & Lab Notes 
 
 컴퓨터 비전(Computer Vision) 기본 개념 실습부터 딥러닝 기반 이미지 처리 모델 구현까지 학습한 내용과 프로젝트 코드를 정리하는 저장소입니다.
 
